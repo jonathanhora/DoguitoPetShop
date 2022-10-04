@@ -43,13 +43,25 @@ const mensagensDeErro = {
     },
     cep:{
         valueMissing: 'O campo de CEP não pode estar vazio.',
-        patternMismatch: 'O CEP digitado não é válido.' 
+        patternMismatch: 'O CEP digitado não é válido.',
+        customError: 'CEP não localizado'
+    },
+    logradouro:{
+        valueMissing: 'O campo de Logradouro não pode estar vazio.'
+    },
+    cidade:{
+        valueMissing: 'O campo de Cidade não pode estar vazio.'
+    },
+    estado:{
+        valueMissing: 'O campo de Estado não pode estar vazio.'
     }
+    
 }
 
 const validadores = {
     dataNascimento:input => validaDataNascimento(input),
-    cpf:input => validaCPF(input)
+    cpf:input => validaCPF(input),
+    cep:input => recuperarCEP(input)
 }
 
 function mostraMensagemDeErro(tipoDeInput, input) {
@@ -154,10 +166,43 @@ function checaDigitoVerificador(cpf) {
     return true
 }
 
+function recuperarCEP(input){
+    const cep = input.value.replace(/\D/g, '')
+    const url = `https://viacep.com.br/ws/${cep}/json/`
+    const options ={
+        method: 'GET',
+        mode: 'cors',
+        headers:{
+            'content-type': 'application/json;charset=utf-8'
+        }
+    }
 
+    if(!input.validity.patternMismatch && !input.validity.valueMissing){
+        fetch(url, options).then(
+            response => response.json()
+        ).then(
+            data => {
+                console.log(data)
+               if(data.erro){
+                input.setCustomValidity('CEP não localizado')
+                return
+               }
+               input.setCustomValidity('')
+               preencheDadosComCEP(data)
+               return
+            }
 
-// 123 456 789 09
+           
+        )
+    }
+}
 
-// let soma = (11 * 1) + (10 * 2) + (9 * 3) ... (2 * 0)
+function preencheDadosComCEP(data){
+    const logradouro = document.querySelector('[data-tipo="logradouro"]')
+    const cidade = document.querySelector('[data-tipo="cidade"]')
+    const estado = document.querySelector('[data-tipo="estado"]')
 
-// let digitoVerificador = 11 - (soma % 11)
+    logradouro.value = data.logradouro
+    cidade.value = data.localidade
+    estado.value = data.uf
+}
