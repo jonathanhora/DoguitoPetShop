@@ -25,8 +25,8 @@ Na tela de cadastro de produtos, no campos preço, utilizamos uma máscara monet
 ![image](https://user-images.githubusercontent.com/65188908/194066690-a0124438-2bc0-4a48-b7bf-6f036a77252e.png)
 
 Para aplicar a máscara, foi utilizado o seguinte script:
+<script src="https://github.com/codermarcos/simple-mask-money/releases/download/v3.0.0/simple-mask-money.js"></script>
 
-<code> <script src="https://github.com/codermarcos/simple-mask-money/releases/download/v3.0.0/simple-mask-money.js"></script> <code>
 
 Formatação da máscara:
 
